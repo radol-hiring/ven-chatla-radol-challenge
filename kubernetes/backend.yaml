@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: example
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: vengotswag/nestjs-backend:latest
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://username:password@postgresql-service:5432/dbname"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: example
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP
